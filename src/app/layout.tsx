@@ -3,6 +3,8 @@ import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import { MainLayout } from '@/components/layout/MainLayout';
+import { cn } from '@/lib/utils';
 import { AppProvider } from '@/providers/app';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -14,8 +16,10 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
   <html lang='en' suppressHydrationWarning>
-    <body className={inter.className}>
-      <AppProvider>{children}</AppProvider>
+    <body className={cn('antialiased', inter.className)}>
+      <AppProvider>
+        <MainLayout>{children}</MainLayout>
+      </AppProvider>
     </body>
   </html>
 );
