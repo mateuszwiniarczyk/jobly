@@ -1,23 +1,23 @@
 import Link from 'next/link';
 
-import { SignInForm } from '@/app/(auth)/components/SignInForm';
+import { SignUpForm } from '@/app/(auth)/components/SignUpForm';
 
-const SignInPage = () => (
+const SignUpPage = () => (
   <div className='mx-auto my-10 max-w-md'>
     <h1 className='mb-2.5 text-center text-3xl font-bold lg:text-4xl'>
-      Sign In to your account
+      Tell us about yourself
     </h1>
     <p className='mb-10 text-center text-sm font-normal text-muted-foreground'>
       Enter your details to proceed further
     </p>
-    <SignInForm />
+    <SignUpForm />
     <span className='mt-5 block text-sm text-muted-foreground'>
-      You don&#39;t have an account?{' '}
-      <Link href='/signup' className='font-semibold'>
-        Sign Up
+      Already have an account?{' '}
+      <Link href='/signin' className='font-semibold'>
+        Sign In
       </Link>
     </span>
   </div>
 );
 
-export default SignInPage;
+export default SignUpPage;
