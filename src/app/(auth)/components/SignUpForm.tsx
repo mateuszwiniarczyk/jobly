@@ -15,6 +15,8 @@ import {
   FormMessage,
 } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
+import { accountType } from '@/constants/account';
 import { signUpSchema } from '@/lib/validations/auth';
 
 type FormValues = z.infer<typeof signUpSchema>;
@@ -25,6 +27,7 @@ export const SignUpForm = () => {
     defaultValues: {
       email: '',
       name: '',
+      type: accountType.EMPLOYEE,
       password: '',
       confirmPassword: '',
     },
@@ -36,6 +39,36 @@ export const SignUpForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+        <FormField
+          control={form.control}
+          name='type'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Account Type</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className='flex flex-col space-y-1'
+                >
+                  <FormItem className='flex items-center space-x-3 space-y-0'>
+                    <FormControl>
+                      <RadioGroupItem value={accountType.EMPLOYEE} />
+                    </FormControl>
+                    <FormLabel className='font-normal'>Employee</FormLabel>
+                  </FormItem>
+                  <FormItem className='flex items-center space-x-3 space-y-0'>
+                    <FormControl>
+                      <RadioGroupItem value={accountType.COMPANY} />
+                    </FormControl>
+                    <FormLabel className='font-normal'>Company</FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name='name'
@@ -73,6 +106,7 @@ export const SignUpForm = () => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name='password'

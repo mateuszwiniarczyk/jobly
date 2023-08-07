@@ -1,5 +1,6 @@
 'use client';
 
+import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from 'next-themes';
 
 interface AppProviderProps {
@@ -8,6 +9,6 @@ interface AppProviderProps {
 
 export const AppProvider = ({ children }: AppProviderProps) => (
   <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-    {children}
+    <SessionProvider>{children}</SessionProvider>
   </ThemeProvider>
 );

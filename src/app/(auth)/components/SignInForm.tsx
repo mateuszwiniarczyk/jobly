@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -28,7 +29,7 @@ export const SignInForm = () => {
   });
 
   function onSubmit(values: FormValues) {
-    return values;
+    signIn('credentials', { email: values.email, password: values.password });
   }
 
   return (
