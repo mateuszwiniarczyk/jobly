@@ -1,9 +1,11 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { signUpAction } from '@/app/_actions/user';
 import { Button } from '@/components/ui/Button';
 import {
   Form,
@@ -22,6 +24,8 @@ import { signUpSchema } from '@/lib/validations/auth';
 type FormValues = z.infer<typeof signUpSchema>;
 
 export const SignUpForm = () => {
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<FormValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -34,7 +38,16 @@ export const SignUpForm = () => {
   });
 
   function onSubmit(values: FormValues) {
-    return values;
+    startTransition(async () => {
+      try {
+        await signUpAction(values);
+      } catch (error) {
+        // @TODO: Handle error
+
+        // eslint-disable-next-line no-console
+        console.log(error);
+      }
+    });
   }
   return (
     <Form {...form}>
@@ -141,7 +154,7 @@ export const SignUpForm = () => {
             </FormItem>
           )}
         />
-        <Button type='submit' className='w-full'>
+        <Button type='submit' className='w-full' disabled={isPending}>
           Sign Up
         </Button>
       </form>

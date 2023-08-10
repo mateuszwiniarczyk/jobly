@@ -1,7 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -20,6 +22,14 @@ import { signInSchema } from '@/lib/validations/auth';
 type FormValues = z.infer<typeof signInSchema>;
 
 export const SignInForm = () => {
+  const router = useRouter();
+
+  const { data: session } = useSession();
+
+  if (session) router.push('/');
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -28,9 +38,25 @@ export const SignInForm = () => {
     },
   });
 
-  function onSubmit(values: FormValues) {
-    signIn('credentials', { email: values.email, password: values.password });
-  }
+  const onSubmit = async (values: FormValues) => {
+    setIsLoading(true);
+
+    try {
+      const res = await signIn('credentials', {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      });
+
+      if (res?.ok) {
+        router.refresh();
+      }
+    } catch (error) {
+      return error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -69,7 +95,7 @@ export const SignInForm = () => {
             </FormItem>
           )}
         />
-        <Button type='submit' className='w-full'>
+        <Button className='w-full' disabled={isLoading}>
           Sign In
         </Button>
       </form>
