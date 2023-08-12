@@ -2,14 +2,18 @@
 
 # dependencies
 /node_modules
+/.react-email/node_modules
 /.pnp
 .pnp.js
+
+/.react-email
 
 # testing
 /coverage
 
 # next.js
 /.next/
+/.react-email/.next/
 /out/
 
 # production

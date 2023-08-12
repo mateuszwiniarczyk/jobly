@@ -21,12 +21,13 @@ enum UserType {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
-  passwordHash String   @map("password_hash")
-  image        String?
-  type         UserType
-  role         Role     @default(REGULAR)
+  id                 Int      @id @default(autoincrement())
+  email              String   @unique
+  passwordHash       String   @map("password_hash")
+  resetPasswordToken String?  @unique @map("reset_password_token")
+  image              String?
+  type               UserType
+  role               Role     @default(REGULAR)
 
   employee Employee?
   company  Company?

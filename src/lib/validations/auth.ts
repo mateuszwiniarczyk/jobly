@@ -30,3 +30,24 @@ export const signUpSchema = authSchema
   });
 
 export const signInSchema = authSchema;
+
+export const resetPasswordSchema = authSchema.omit({
+  password: true,
+});
+
+export const updatePasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, {
+        message: 'Password must contain at least 8 characters.',
+      })
+      .max(100),
+    confirmPassword: z.string().min(8, {
+      message: 'Password must contain at least 8 characters.',
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
