@@ -12,9 +12,15 @@ import {
 
 interface ResetPasswordEmailProps {
   email: string;
+  resetPasswordToken: string;
 }
 
-const ResetPasswordEmail = ({ email }: ResetPasswordEmailProps) => {
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? '';
+
+const ResetPasswordEmail = ({
+  email,
+  resetPasswordToken,
+}: ResetPasswordEmailProps) => {
   return (
     <Html>
       <Head />
@@ -28,7 +34,11 @@ const ResetPasswordEmail = ({ email }: ResetPasswordEmailProps) => {
                 Someone recently requested a password change for your Jobly
                 account. If this was you, you can set a new password here:
               </Text>
-              <Button href='/'>Reset password</Button>
+              <Button
+                href={`${baseUrl}/update-password?token=${resetPasswordToken}`}
+              >
+                Reset password
+              </Button>
               <Text>
                 If you don&apos;t want to change your password or didn&apos;t
                 request this, just ignore and delete this message.
