@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/Button';
@@ -17,9 +18,15 @@ import {
   FormMessage,
 } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
+import { catchError } from '@/lib/utils';
 import { signInSchema } from '@/lib/validations/auth';
 
 type FormValues = z.infer<typeof signInSchema>;
+
+const defaultValues: FormValues = {
+  email: '',
+  password: '',
+};
 
 export const SignInForm = () => {
   const router = useRouter();
@@ -32,10 +39,7 @@ export const SignInForm = () => {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(signInSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues,
   });
 
   const onSubmit = async (values: FormValues) => {
@@ -49,10 +53,13 @@ export const SignInForm = () => {
       });
 
       if (res?.ok) {
+        form.reset(defaultValues);
+        toast.success('Signed in successfully');
+
         router.refresh();
       }
     } catch (error) {
-      return error;
+      catchError(error);
     } finally {
       setIsLoading(false);
     }

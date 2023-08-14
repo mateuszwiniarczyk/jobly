@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { signUpAction } from '@/app/_actions/user';
@@ -19,33 +20,36 @@ import {
 import { Input } from '@/components/ui/Input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { accountType } from '@/constants/account';
+import { catchError } from '@/lib/utils';
 import { signUpSchema } from '@/lib/validations/auth';
 
 type FormValues = z.infer<typeof signUpSchema>;
+
+const defaultValues: FormValues = {
+  email: '',
+  name: '',
+  type: accountType.EMPLOYEE,
+  password: '',
+  confirmPassword: '',
+};
 
 export const SignUpForm = () => {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      email: '',
-      name: '',
-      type: accountType.EMPLOYEE,
-      password: '',
-      confirmPassword: '',
-    },
+    defaultValues,
   });
 
   function onSubmit(values: FormValues) {
     startTransition(async () => {
       try {
         await signUpAction(values);
-      } catch (error) {
-        // @TODO: Handle error
 
-        // eslint-disable-next-line no-console
-        console.log(error);
+        form.reset(defaultValues);
+        toast.success('Account created successfully');
+      } catch (error) {
+        catchError(error);
       }
     });
   }

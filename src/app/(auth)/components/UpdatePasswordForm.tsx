@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { updatePasswordAction } from '@/app/_actions/user';
@@ -16,9 +17,15 @@ import {
   FormMessage,
 } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
+import { catchError } from '@/lib/utils';
 import { updatePasswordSchema } from '@/lib/validations/auth';
 
 type FormValues = z.infer<typeof updatePasswordSchema>;
+
+const defaultValues: FormValues = {
+  password: '',
+  confirmPassword: '',
+};
 
 export const UpdatePasswordForm = ({
   resetPasswordToken,
@@ -28,10 +35,7 @@ export const UpdatePasswordForm = ({
   const [isPending, startTransition] = useTransition();
   const form = useForm<FormValues>({
     resolver: zodResolver(updatePasswordSchema),
-    defaultValues: {
-      password: '',
-      confirmPassword: '',
-    },
+    defaultValues,
   });
 
   const onSubmit = (values: FormValues) => {
@@ -42,10 +46,11 @@ export const UpdatePasswordForm = ({
           ...values,
         };
         await updatePasswordAction(payload);
+
+        form.reset(defaultValues);
+        toast.success('Password updated successfully');
       } catch (error) {
-        // @TODO: Handle error
-        // eslint-disable-next-line no-console
-        console.log(error);
+        catchError(error);
       }
     });
   };

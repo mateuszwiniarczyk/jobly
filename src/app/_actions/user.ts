@@ -14,8 +14,16 @@ import {
 } from '@/lib/validations/auth';
 
 export const signUpAction = async (user: z.infer<typeof signUpSchema>) => {
-  signUpSchema.parse(user);
   const passwordHash = await bcrypt.hash(user.password, 12);
+
+  const userExists = await prisma.user.findUnique({
+    where: {
+      email: user.email,
+    },
+  });
+
+  if (userExists) throw new Error('User already exists');
+
   const createdUser = await prisma.user.create({
     data: {
       email: user.email,
@@ -52,8 +60,6 @@ export const signUpAction = async (user: z.infer<typeof signUpSchema>) => {
 export const resetPasswordAction = async (
   user: z.infer<typeof resetPasswordSchema>,
 ) => {
-  resetPasswordSchema.parse(user);
-
   const userExists = await prisma.user.findUnique({
     where: {
       email: user.email,
@@ -88,7 +94,6 @@ type UpdatePasswordPayload = {
 
 export const updatePasswordAction = async (payload: UpdatePasswordPayload) => {
   const { resetPasswordToken, ...user } = payload;
-  updatePasswordSchema.parse(user);
 
   const userExists = await prisma.user.findUnique({
     where: {

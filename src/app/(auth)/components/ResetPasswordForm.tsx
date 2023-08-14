@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { resetPasswordAction } from '@/app/_actions/user';
@@ -16,27 +17,31 @@ import {
   FormMessage,
 } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
+import { catchError } from '@/lib/utils';
 import { resetPasswordSchema } from '@/lib/validations/auth';
 
 type FormValues = z.infer<typeof resetPasswordSchema>;
+
+const defaultValues: FormValues = {
+  email: '',
+};
 
 export const ResetPasswordForm = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<FormValues>({
     resolver: zodResolver(resetPasswordSchema),
-    defaultValues: {
-      email: '',
-    },
+    defaultValues,
   });
 
   const onSubmit = (values: FormValues) => {
     startTransition(async () => {
       try {
         await resetPasswordAction(values);
+
+        form.reset(defaultValues);
+        toast.success('Password reset link sent to your email address');
       } catch (error) {
-        // @TODO: Handle error
-        // eslint-disable-next-line no-console
-        console.log(error);
+        catchError(error);
       }
     });
   };
