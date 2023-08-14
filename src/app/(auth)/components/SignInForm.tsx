@@ -1,8 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -29,12 +28,6 @@ const defaultValues: FormValues = {
 };
 
 export const SignInForm = () => {
-  const router = useRouter();
-
-  const { data: session } = useSession();
-
-  if (session) router.push('/');
-
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<FormValues>({
