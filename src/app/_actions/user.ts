@@ -79,9 +79,8 @@ export const resetPasswordAction = async (
     },
   });
 
-  //@TODO: Send email to everyone not only to resend acc creator - need to add own domain not vercel
   await resend.emails.send({
-    from: 'onboarding@resend.dev',
+    from: process.env.DOMAIN_EMAIL_ADDRESS ?? '',
     to: user.email,
     subject: 'Reset your password',
     react: ResetPasswordEmail({ email: user.email, resetPasswordToken }),

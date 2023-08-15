@@ -21,12 +21,20 @@ const SignInPage = async () => {
         Enter your details to proceed further
       </p>
       <SignInForm />
-      <span className='mt-5 block text-sm text-muted-foreground'>
-        You don&#39;t have an account?{' '}
-        <Link href='/signup' className='font-semibold'>
-          Sign Up
+      <div className='mt-5 flex items-start justify-between gap-2.5 text-sm text-muted-foreground'>
+        <span className='block flex-1 sm:flex-auto'>
+          Don't have an account?{' '}
+          <Link href='/signup' className='font-semibold'>
+            Sign Up
+          </Link>
+        </span>
+        <Link
+          className='block flex-1 text-right font-semibold sm:flex-auto'
+          href='/reset-password'
+        >
+          Reset password
         </Link>
-      </span>
+      </div>
     </div>
   );
 };
