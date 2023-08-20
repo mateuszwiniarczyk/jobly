@@ -47,7 +47,11 @@ export const SignInForm = () => {
         password: values.password,
       });
 
-      if (res?.ok) {
+      if (res?.error) {
+        throw new Error(res.error);
+      }
+
+      if (res?.ok && !res?.error) {
         form.reset(defaultValues);
         toast.success('Signed in successfully');
 

@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials) {
-          return null;
+          throw new Error('Invalid credentials');
         }
 
         const user = await prisma.user.findUnique({
@@ -26,14 +26,14 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        if (!user?.passwordHash) return null;
+        if (!user?.passwordHash) throw new Error('Something went wrong');
 
         const arePasswordsEqual = await bcrypt.compare(
           credentials.password,
           user.passwordHash,
         );
 
-        if (!arePasswordsEqual) return null;
+        if (!arePasswordsEqual) throw new Error('Invalid credentials');
 
         if (user.type === 'COMPANY') {
           const company = await prisma.company.findUnique({
