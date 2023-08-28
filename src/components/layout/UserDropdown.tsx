@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/DropdownMenu';
 
 interface UserDropdownProps {
-  user: Session['user'] | null;
+  user?: Session['user'];
 }
 
 export const UserDropdown = ({ user }: UserDropdownProps) => (
