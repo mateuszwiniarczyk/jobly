@@ -46,5 +46,85 @@ model Company {
   userId Int    @unique @map("user_id")
   name   String
 
-  user User @relation(fields: [userId], references: [id])
+  user     User       @relation(fields: [userId], references: [id])
+  JobOffer JobOffer[]
+}
+
+enum ExperienceLevel {
+  TRAINEE
+  JUNIOR
+  MID
+  SENIOR
+}
+
+enum RemoteOption {
+  REMOTE
+  ONSITE
+  HYBRID
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+}
+
+enum EmploymentType {
+  CONTRACT
+  PERMANENT
+}
+
+enum Skill {
+  JAVASCRIPT
+  PYTHON
+  JAVA
+  CPP
+  RUBY
+  PHP
+  HTML
+  CSS
+  SQL
+  REACT
+  ANGULAR
+  NODEJS
+  CSHARP
+  SWIFT
+  GO
+}
+
+enum OnlineInterview {
+  YES
+  NO
+}
+
+enum PaidHoliday {
+  YES
+  NO
+}
+
+enum FlexibleHours {
+  YES
+  NO
+}
+
+model JobOffer {
+  id              Int             @id @default(autoincrement())
+  position        String
+  experienceLevel ExperienceLevel @map("experience_level")
+  description     String
+  location        String
+  remoteOption    RemoteOption    @map("remote_option")
+  jobType         JobType         @map("job_type")
+  employmentType  EmploymentType  @map("employment_type")
+  skills          Skill[]         @default([])
+  onlineInterview OnlineInterview @map("online_interview")
+  paidHoliday     PaidHoliday     @map("paid_holiday")
+  flexibleHours   FlexibleHours   @map("flexible_hours")
+  minSalary       Int             @map("min_salary")
+  maxSalary       Int             @map("max_salary")
+  contactEmail    String          @map("contact_email")
+  contactPhone    String          @map("contact_phone")
+  companyId       Int             @map("company_id")
+  company         Company         @relation(fields: [companyId], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 }

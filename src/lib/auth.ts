@@ -42,10 +42,12 @@ export const authOptions: NextAuthOptions = {
             },
           });
 
+          if (!company) return null;
+
           return {
-            id: String(user.id),
+            id: user.id,
             email: user.email,
-            name: company?.name,
+            name: company.name,
           };
         } else {
           const employee = await prisma.employee.findUnique({
@@ -54,15 +56,34 @@ export const authOptions: NextAuthOptions = {
             },
           });
 
+          if (!employee) return null;
+
           return {
-            id: String(user.id),
+            id: user.id,
             email: user.email,
-            name: employee?.name,
+            name: employee.name,
           };
         }
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+      }
+
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user && typeof user.id === 'number') {
+        token.id = user.id;
+      }
+
+      return token;
+    },
+  },
+
   pages: {
     signIn: '/signin',
     signOut: '/signout',
